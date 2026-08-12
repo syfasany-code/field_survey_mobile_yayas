@@ -15,12 +15,11 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +75,9 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: () {
                       // context.go("/register");
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => RegisterPage()
-                        ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
                       );
                     },
                     child: Text('Belum punya akun?Daftar'),
@@ -92,5 +91,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-                  
-      

@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final phoneController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
@@ -74,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         value: "Perempuan",
                         child: Text("Perempuan"),
                       ),
-                    ], 
+                    ],
                     onChanged: (value) {
                       setState(() {
                         gender = value;
