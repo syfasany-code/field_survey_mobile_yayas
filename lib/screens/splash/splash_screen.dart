@@ -1,6 +1,7 @@
-import 'package:field_survey_mobile_yayas/routes/app_routes.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import '../auth/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,38 +11,61 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      context.go(AppRoutes.login);
+
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             Icon(
-              Icons.assignment,
-              size:100,
-              color: Colors.blue,
+              Icons.map,
+              size: 130,
+              color: Colors.indigo,
             ),
+
             SizedBox(height: 20),
+
             Text(
-              'Field Survey',
+              "Field Survey",
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
+
+            SizedBox(height: 8),
+
             Text(
-              'Aplikasi Mobile Berbasis Flutter',
-              style: TextStyle(fontSize: 16),
+              "Simple • Fast • Modern",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+
+            SizedBox(height: 40),
+
+            CircularProgressIndicator(
+              color: Colors.indigo,
             ),
           ],
         ),

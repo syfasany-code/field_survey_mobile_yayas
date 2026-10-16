@@ -5,5 +5,6 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String profile = '/profile';
   static const String survey = '/survey';
-  static const String laporan = '/laporan';
+  static const String surveyDetail = '/survey-detail';
+  static const String surveyForm = '/survey-form';
 }
