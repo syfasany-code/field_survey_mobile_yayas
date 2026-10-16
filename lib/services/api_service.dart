@@ -4,41 +4,39 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const String baseUrl = 'https://sijala.biz.id/api/v1';
   static Future<Map<String, dynamic>> register({
-      required String name,
-      required String email,
-      required String password,
-      String? phone,
-      String? gender,
-    }) async {
-      final response = await http.post(
-        Uri.parse('$baseUrl/register'),
-        headers: {
-          'Accept': 'application/json',
-        },
-        body: {
-          'name': name,
-          'email': email,
-          'password': password,
-          'password_confirmation': password,
-          'phone': phone ?? '',
-          'gender': gender ?? '',
-        },
-      );
+    required String name,
+    required String email,
+    required String password,
+    String? phone,
+    String? gender,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/register'),
+      headers: {'Accept': 'application/json'},
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': password,
+        'phone': phone ?? '',
+        'gender': gender ?? '',
+      },
+    );
 
-      print('STATUS: ${response.statusCode}');
-      print('BODY: ${response.body}');
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
 
-      final data = jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return data;
-      } else {
-        if (data['errors'] != null) {
-          throw Exception(data['errors'].toString());
-        }
-        throw Exception(data['message'] ?? 'Register gagal');
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return data;
+    } else {
+      if (data['errors'] != null) {
+        throw Exception(data['errors'].toString());
       }
+      throw Exception(data['message'] ?? 'Register gagal');
     }
+  }
 
   static Future<Map<String, dynamic>> login(
     String email,

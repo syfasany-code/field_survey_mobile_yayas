@@ -73,8 +73,7 @@ class _SurveyPageState extends State<SurveyPage> {
       }
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data =
-            jsonDecode(response.body);
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
         if (data['status'] == true && data['data'] is List) {
           final List rawList = data['data'];
@@ -82,10 +81,7 @@ class _SurveyPageState extends State<SurveyPage> {
           setState(() {
             surveys = rawList
                 .whereType<Map>()
-                .map(
-                  (item) =>
-                      Map<String, dynamic>.from(item),
-                )
+                .map((item) => Map<String, dynamic>.from(item))
                 .toList();
 
             isLoading = false;
@@ -95,16 +91,13 @@ class _SurveyPageState extends State<SurveyPage> {
         }
       }
 
-      throw Exception(
-        'Gagal memuat data (Kode: ${response.statusCode})',
-      );
+      throw Exception('Gagal memuat data (Kode: ${response.statusCode})');
     } catch (e) {
       if (!mounted) return;
 
       setState(() {
         isLoading = false;
-        errorMessage =
-            'Tidak dapat terhubung ke server. Periksa koneksi Anda.';
+        errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi Anda.';
       });
     }
   }
@@ -113,20 +106,18 @@ class _SurveyPageState extends State<SurveyPage> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            SurveyDetailPage(surveyId: surveyId),
+        builder: (context) => SurveyDetailPage(surveyId: surveyId),
       ),
     );
     if (result == true && mounted) {
       fetchSurveys();
     }
   }
+
   Future<void> openAddSurvey() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const SurveyFormPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const SurveyFormPage()),
     );
     if (result == true && mounted) {
       fetchSurveys();
@@ -139,20 +130,18 @@ class _SurveyPageState extends State<SurveyPage> {
       return survey['category_name'].toString();
     }
 
-    if (survey['category'] is Map &&
-        survey['category']['name'] != null) {
+    if (survey['category'] is Map && survey['category']['name'] != null) {
       return survey['category']['name'].toString();
     }
 
     return 'Tanpa Kategori';
   }
+
   String formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return '-';
 
     try {
-      final date = DateTime.parse(
-        dateStr.replaceFirst(' ', 'T'),
-      );
+      final date = DateTime.parse(dateStr.replaceFirst(' ', 'T'));
 
       return '${date.day.toString().padLeft(2, '0')}/'
           '${date.month.toString().padLeft(2, '0')}/'
@@ -185,7 +174,9 @@ class _SurveyPageState extends State<SurveyPage> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Tambah Survey',style: TextStyle(fontWeight: FontWeight.bold,),
+        label: const Text(
+          'Tambah Survey',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -197,11 +188,11 @@ class _SurveyPageState extends State<SurveyPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              color: primaryColor,
-            ),
+            CircularProgressIndicator(color: primaryColor),
             SizedBox(height: 16),
-            Text('Memuat data survey...',style: TextStyle(color: Color(0xFF64748B),),
+            Text(
+              'Memuat data survey...',
+              style: TextStyle(color: Color(0xFF64748B)),
             ),
           ],
         ),
@@ -215,7 +206,10 @@ class _SurveyPageState extends State<SurveyPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.wifi_off_rounded,size: 64,color: Color(0xFFEF4444),
+              const Icon(
+                Icons.wifi_off_rounded,
+                size: 64,
+                color: Color(0xFFEF4444),
               ),
 
               const SizedBox(height: 16),
@@ -234,9 +228,7 @@ class _SurveyPageState extends State<SurveyPage> {
               Text(
                 errorMessage!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF64748B),
-                ),
+                style: const TextStyle(color: Color(0xFF64748B)),
               ),
 
               const SizedBox(height: 20),
@@ -285,9 +277,7 @@ class _SurveyPageState extends State<SurveyPage> {
               const Text(
                 'Tekan tombol di bawah untuk menambah survey baru.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF64748B),
-                ),
+                style: TextStyle(color: Color(0xFF64748B)),
               ),
 
               const SizedBox(height: 20),
@@ -308,40 +298,25 @@ class _SurveyPageState extends State<SurveyPage> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        88,
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
       itemCount: surveys.length,
 
       itemBuilder: (context, index) {
         final survey = surveys[index];
 
-        final id =
-            int.tryParse(
-              survey['id']?.toString() ?? '',
-            ) ??
-            0;
+        final id = int.tryParse(survey['id']?.toString() ?? '') ?? 0;
 
-        final title =
-            survey['title']?.toString() ?? '-';
+        final title = survey['title']?.toString() ?? '-';
 
-        final description =
-            survey['description']?.toString() ?? '-';
+        final description = survey['description']?.toString() ?? '-';
 
         final category = getCategoryName(survey);
 
-        final date = formatDate(
-          survey['created_at']?.toString(),
-        );
+        final date = formatDate(survey['created_at']?.toString());
 
-        final lat =
-            survey['latitude']?.toString() ?? '';
+        final lat = survey['latitude']?.toString() ?? '';
 
-        final lng =
-            survey['longitude']?.toString() ?? '';
+        final lng = survey['longitude']?.toString() ?? '';
 
         return Card(
           elevation: 0,
@@ -350,9 +325,7 @@ class _SurveyPageState extends State<SurveyPage> {
 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
-            side: const BorderSide(
-              color: Color(0xFFE2E8F0),
-            ),
+            side: const BorderSide(color: Color(0xFFE2E8F0)),
           ),
 
           child: InkWell(
@@ -364,30 +337,25 @@ class _SurveyPageState extends State<SurveyPage> {
               padding: const EdgeInsets.all(16),
 
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
                   Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
                           children: [
                             Text(
                               title,
                               maxLines: 2,
-                              overflow:
-                                  TextOverflow.ellipsis,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 16,
-                                fontWeight:
-                                    FontWeight.bold,
+                                fontWeight: FontWeight.bold,
                                 color: Color(0xFF0F172A),
                               ),
                             ),
@@ -395,28 +363,21 @@ class _SurveyPageState extends State<SurveyPage> {
                             const SizedBox(height: 6),
 
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 3,
                               ),
 
-                              decoration:
-                                  BoxDecoration(
-                                color:
-                                    const Color(
-                                  0xFFEFF6FF,
-                                ),
-                                borderRadius:
-                                    BorderRadius.circular(6),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEFF6FF),
+                                borderRadius: BorderRadius.circular(6),
                               ),
 
                               child: Text(
                                 category,
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  fontWeight:
-                                      FontWeight.w600,
+                                  fontWeight: FontWeight.w600,
                                   color: primaryColor,
                                 ),
                               ),
@@ -425,10 +386,7 @@ class _SurveyPageState extends State<SurveyPage> {
                         ),
                       ),
 
-                      const Icon(
-                        Icons.chevron_right,
-                        color: Color(0xFF94A3B8),
-                      ),
+                      const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
                     ],
                   ),
 
@@ -445,10 +403,7 @@ class _SurveyPageState extends State<SurveyPage> {
 
                   const SizedBox(height: 12),
 
-                  const Divider(
-                    color: Color(0xFFE2E8F0),
-                    height: 1,
-                  ),
+                  const Divider(color: Color(0xFFE2E8F0), height: 1),
 
                   const SizedBox(height: 10),
                   Row(
@@ -463,13 +418,11 @@ class _SurveyPageState extends State<SurveyPage> {
 
                       Expanded(
                         child: Text(
-                          (lat.isNotEmpty &&
-                                  lng.isNotEmpty)
+                          (lat.isNotEmpty && lng.isNotEmpty)
                               ? '$lat, $lng'
                               : 'Lokasi tidak tersedia',
                           maxLines: 1,
-                          overflow:
-                              TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF64748B),

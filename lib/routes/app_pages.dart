@@ -14,35 +14,43 @@ class AppPages {
     initialLocation: AppRoutes.splash,
     routes: [
       GoRoute(
-        path: AppRoutes.splash,builder: (context, state) => const SplashScreen(),
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: AppRoutes.login,builder: (context, state) => const LoginPage(),
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: AppRoutes.register,builder: (context, state) => const RegisterPage(),
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
-        path: AppRoutes.dashboard,builder: (context, state) {
+        path: AppRoutes.dashboard,
+        builder: (context, state) {
           return const DashboardPage();
         },
       ),
       GoRoute(
-        path: '/profile',builder: (context, state) {
+        path: '/profile',
+        builder: (context, state) {
           return const ProfilePage();
         },
       ),
       GoRoute(
-        path: AppRoutes.survey,builder: (context, state) => const SurveyPage(),
+        path: AppRoutes.survey,
+        builder: (context, state) => const SurveyPage(),
       ),
       GoRoute(
-        path: AppRoutes.surveyDetail,builder: (context, state) {
+        path: AppRoutes.surveyDetail,
+        builder: (context, state) {
           final id = state.extra as int;
           return SurveyDetailPage(surveyId: id);
         },
       ),
       GoRoute(
-        path: AppRoutes.surveyForm,builder: (context, state) {
+        path: AppRoutes.surveyForm,
+        builder: (context, state) {
           final survey = state.extra as Map<String, dynamic>?;
           return SurveyFormPage(survey: survey);
         },

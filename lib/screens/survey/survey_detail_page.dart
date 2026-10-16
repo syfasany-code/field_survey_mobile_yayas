@@ -144,13 +144,13 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
   // 5. REST API: MENGHAPUS SURVEY (DELETE)
   Future<void> deleteSurvey() async {
     final confirm = await showDialog<bool>(
-      context: context, 
+      context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Hapus Survey'),
         content: const Text('Apakah Anda yakin ingin menghapus survey ini?'),
         actions: [
           TextButton(
-            onPressed: ( ) => Navigator.pop(ctx, false), 
+            onPressed: () => Navigator.pop(ctx, false),
             child: const Text('Batal'),
           ),
           ElevatedButton(
@@ -158,7 +158,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
               backgroundColor: const Color(0xFFEF4444),
               foregroundColor: Colors.white,
             ),
-            onPressed: ( ) => Navigator.pop(ctx, true), 
+            onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Hapus'),
           ),
         ],
@@ -180,7 +180,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
           'Authorization': 'Bearer $token',
         },
       );
-      
+
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 204) {
@@ -194,11 +194,12 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Gagal menghapus survey (Kode: ${response.statusCode})',
+            content: Text(
+              'Gagal menghapus survey (Kode: ${response.statusCode})',
+            ),
+            backgroundColor: const Color(0xFFEF4444),
           ),
-          backgroundColor: const Color(0xFFEF4444),
-        ),
-          );
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -206,10 +207,11 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
         const SnackBar(
           content: Text('Terjadi kesalahan saat menghapus survey.'),
           backgroundColor: Color(0xFFEF4444),
-          ),
-        );
-      }
+        ),
+      );
     }
+  }
+
   Future<void> editSurvey() async {
     if (survey == null) return;
     final result = await Navigator.push(
@@ -221,6 +223,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       fetchDetail();
     }
   }
+
   Future<void> openGoogleMaps(double lat, double lng) async {
     final uri = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
@@ -241,6 +244,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       const SnackBar(content: Text('Koordinat berhasil disalin!')),
     );
   }
+
   void showFullImageDialog(Uint8List bytes) {
     showDialog(
       context: context,
@@ -267,6 +271,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -80,7 +80,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 30),
-                  const Icon(Icons.person_add, size: 90, color: Color(0xFF3F51B5),),
+                  const Icon(
+                    Icons.person_add,
+                    size: 90,
+                    color: Color(0xFF3F51B5),
+                  ),
                   const SizedBox(height: 20),
                   const Text(
                     'FIELD SURVEY',
@@ -107,14 +111,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       border: OutlineInputBorder(),
                     ),
                     items: const [
-                      DropdownMenuItem(
-                        value: "L",
-                        child: Text("Laki-Laki"),
-                      ),
-                      DropdownMenuItem(
-                        value: "P",
-                        child: Text("Perempuan"),
-                      ),
+                      DropdownMenuItem(value: "L", child: Text("Laki-Laki")),
+                      DropdownMenuItem(value: "P", child: Text("Perempuan")),
                     ],
                     onChanged: (value) {
                       setState(() {

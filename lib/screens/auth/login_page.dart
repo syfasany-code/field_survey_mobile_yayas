@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         // Ambil token
-        final token = data['data']['token'] ;
+        final token = data['data']['token'];
 
         if (token == null) {
           throw Exception('Token tidak ditemukan dari API');

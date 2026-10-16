@@ -11,7 +11,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -19,9 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }
@@ -34,12 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Icon(
-              Icons.map,
-              size: 130,
-              color: Colors.indigo,
-            ),
+            Icon(Icons.map, size: 130, color: Colors.indigo),
 
             SizedBox(height: 20),
 
@@ -56,17 +48,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
             Text(
               "Simple • Fast • Modern",
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
 
             SizedBox(height: 40),
 
-            CircularProgressIndicator(
-              color: Colors.indigo,
-            ),
+            CircularProgressIndicator(color: Colors.indigo),
           ],
         ),
       ),

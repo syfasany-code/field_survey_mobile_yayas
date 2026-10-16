@@ -10,17 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SurveyFormPage extends StatefulWidget {
   final Map<String, dynamic>? survey;
 
-  const SurveyFormPage({
-    super.key,
-    this.survey,
-  });
+  const SurveyFormPage({super.key, this.survey});
 
   @override
   State<SurveyFormPage> createState() => _SurveyFormPageState();
 }
 
 class _SurveyFormPageState extends State<SurveyFormPage> {
-
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -41,7 +37,6 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
 
   static const Color primaryColor = Color(0xFF1E40AF);
 
-
   @override
   void initState() {
     super.initState();
@@ -49,22 +44,17 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     if (isEdit) {
       final survey = widget.survey!;
 
-      titleController.text =
-          survey['title']?.toString() ?? '';
+      titleController.text = survey['title']?.toString() ?? '';
 
-      descriptionController.text =
-          survey['description']?.toString() ?? '';
+      descriptionController.text = survey['description']?.toString() ?? '';
 
-      latitudeController.text =
-          survey['latitude']?.toString() ?? '';
+      latitudeController.text = survey['latitude']?.toString() ?? '';
 
-      longitudeController.text =
-          survey['longitude']?.toString() ?? '';
+      longitudeController.text = survey['longitude']?.toString() ?? '';
 
-      selectedCategoryId =
-          int.tryParse(
-            survey['category_id']?.toString() ?? '',
-          );
+      selectedCategoryId = int.tryParse(
+        survey['category_id']?.toString() ?? '',
+      );
 
       final photoName = survey['photo']?.toString();
 
@@ -86,15 +76,14 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
 
     super.dispose();
   }
+
   Future<void> fetchCategories() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
       final response = await http.get(
-        Uri.parse(
-          'https://sijala.biz.id/api/v1/categories',
-        ),
+        Uri.parse('https://sijala.biz.id/api/v1/categories'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
@@ -104,8 +93,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
 
-        if (decoded is Map &&
-            decoded['data'] is List) {
+        if (decoded is Map && decoded['data'] is List) {
           final List rawList = decoded['data'];
 
           if (!mounted) return;
@@ -113,10 +101,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
           setState(() {
             categories = rawList
                 .whereType<Map>()
-                .map(
-                  (item) =>
-                      Map<String, dynamic>.from(item),
-                )
+                .map((item) => Map<String, dynamic>.from(item))
                 .toList();
 
             isLoadingCategories = false;
@@ -146,27 +131,22 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
           : photoName;
 
       final response = await http.get(
-        Uri.parse(
-          'https://sijala.biz.id/api/image/$fileName',
-        ),
+        Uri.parse('https://sijala.biz.id/api/image/$fileName'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
 
-      if (response.statusCode == 200 &&
-          response.bodyBytes.isNotEmpty) {
+      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
         if (!mounted) return;
 
         setState(() {
           existingImageBytes = response.bodyBytes;
         });
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
-
 
   Future<void> pickImage(ImageSource source) async {
     try {
@@ -190,9 +170,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
         });
       }
     } catch (e) {
-      showErrorSnackBar(
-        'Gagal memilih foto.',
-      );
+      showErrorSnackBar('Gagal memilih foto.');
     }
   }
 
@@ -208,9 +186,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -221,19 +197,13 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
               children: [
                 const Text(
                   'Pilih Sumber Foto',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 16),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.photo_library,
-                    color: primaryColor,
-                  ),
+                  leading: const Icon(Icons.photo_library, color: primaryColor),
                   title: const Text('Galeri'),
                   onTap: () {
                     Navigator.pop(ctx);
@@ -242,10 +212,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                 ),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.camera_alt,
-                    color: primaryColor,
-                  ),
+                  leading: const Icon(Icons.camera_alt, color: primaryColor),
                   title: const Text('Kamera'),
                   onTap: () {
                     Navigator.pop(ctx);
@@ -263,18 +230,13 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
   Future<void> saveSurvey() async {
     // Validasi form
     if (!formKey.currentState!.validate()) {
-      showErrorSnackBar(
-        'Lengkapi data yang wajib diisi.',
-      );
+      showErrorSnackBar('Lengkapi data yang wajib diisi.');
       return;
     }
 
     // Validasi kategori
-    if (selectedCategoryId == null ||
-        selectedCategoryId == 0) {
-      showErrorSnackBar(
-        'Kategori survey wajib dipilih.',
-      );
+    if (selectedCategoryId == null || selectedCategoryId == 0) {
+      showErrorSnackBar('Kategori survey wajib dipilih.');
       return;
     }
 
@@ -283,67 +245,49 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     });
 
     try {
-      final prefs =
-          await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
 
-      final token =
-          prefs.getString('token') ?? '';
+      final token = prefs.getString('token') ?? '';
       if (token.isEmpty) {
         if (!mounted) return;
 
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ),
+          MaterialPageRoute(builder: (context) => const LoginPage()),
           (route) => false,
         );
 
         return;
       }
 
-      final uri = Uri.parse(
-        'https://sijala.biz.id/api/v1/surveys/save',
-      );
+      final uri = Uri.parse('https://sijala.biz.id/api/v1/surveys/save');
 
-      final request = http.MultipartRequest(
-        'POST',
-        uri,
-      );
-      request.headers['Accept'] =
-          'application/json';
+      final request = http.MultipartRequest('POST', uri);
+      request.headers['Accept'] = 'application/json';
 
-      request.headers['Authorization'] =
-          'Bearer $token';
+      request.headers['Authorization'] = 'Bearer $token';
 
-      request.fields['title'] =
-          titleController.text.trim();
+      request.fields['title'] = titleController.text.trim();
 
-      request.fields['category_id'] =
-          selectedCategoryId.toString();
+      request.fields['category_id'] = selectedCategoryId.toString();
 
-      request.fields['description'] =
-          descriptionController.text.trim();
+      request.fields['description'] = descriptionController.text.trim();
 
       if (latitudeController.text.trim().isNotEmpty) {
-        request.fields['latitude'] =
-            latitudeController.text.trim();
+        request.fields['latitude'] = latitudeController.text.trim();
       }
 
       if (longitudeController.text.trim().isNotEmpty) {
-        request.fields['longitude'] =
-            longitudeController.text.trim();
+        request.fields['longitude'] = longitudeController.text.trim();
       }
 
       if (isEdit) {
-        request.fields['id'] =
-            widget.survey!['id'].toString();
+        request.fields['id'] = widget.survey!['id'].toString();
 
         request.fields['_method'] = 'PUT';
       }
 
-      if (selectedImage != null &&
-          selectedImageBytes != null) {
+      if (selectedImage != null && selectedImageBytes != null) {
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo',
@@ -353,16 +297,11 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
         );
       }
 
-      final streamedResponse =
-          await request.send();
+      final streamedResponse = await request.send();
 
-      final response =
-          await http.Response.fromStream(
-        streamedResponse,
-      );
+      final response = await http.Response.fromStream(streamedResponse);
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -372,8 +311,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                   ? 'Survey berhasil diperbarui!'
                   : 'Survey berhasil disimpan!',
             ),
-            backgroundColor:
-                const Color(0xFF108981),
+            backgroundColor: const Color(0xFF108981),
           ),
         );
 
@@ -385,20 +323,14 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
 
       if (response.statusCode == 422) {
         try {
-          final decoded =
-              jsonDecode(response.body);
+          final decoded = jsonDecode(response.body);
 
           final message =
-              decoded['message'] ??
-                  'Data yang dikirim tidak valid.';
+              decoded['message'] ?? 'Data yang dikirim tidak valid.';
 
-          throw Exception(
-            message.toString(),
-          );
+          throw Exception(message.toString());
         } catch (e) {
-          throw Exception(
-            'Data yang dikirim tidak valid.',
-          );
+          throw Exception('Data yang dikirim tidak valid.');
         }
       }
 
@@ -409,12 +341,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     } catch (e) {
       if (!mounted) return;
 
-      showErrorSnackBar(
-        e.toString().replaceFirst(
-          'Exception: ',
-          '',
-        ),
-      );
+      showErrorSnackBar(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) {
         setState(() {
@@ -428,8 +355,7 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor:
-            const Color(0xFFEF4444),
+        backgroundColor: const Color(0xFFEF4444),
       ),
     );
   }
@@ -437,14 +363,9 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text(
-          isEdit
-              ? 'Edit Survey'
-              : 'Tambah Survey',
-        ),
+        title: Text(isEdit ? 'Edit Survey' : 'Tambah Survey'),
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -456,38 +377,30 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
           key: formKey,
 
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
 
             children: [
               Card(
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(14),
-                  side: const BorderSide(
-                    color: Color(0xFFE2E8F0),
-                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  side: const BorderSide(color: Color(0xFFE2E8F0)),
                 ),
 
                 child: Padding(
-                  padding:
-                      const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
                       const Text(
                         'Data Utama Survey',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight:
-                              FontWeight.bold,
-                          color:
-                              Color(0xFF0F172A),
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
                         ),
                       ),
 
@@ -496,30 +409,23 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                         'Judul Survey *',
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
 
                       const SizedBox(height: 6),
 
                       TextFormField(
-                        controller:
-                            titleController,
+                        controller: titleController,
 
-                        decoration:
-                            const InputDecoration(
-                          hintText:
-                              'Masukkan judul survey',
-                          border:
-                              OutlineInputBorder(),
-                          prefixIcon:
-                              Icon(Icons.title),
+                        decoration: const InputDecoration(
+                          hintText: 'Masukkan judul survey',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.title),
                         ),
 
                         validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return 'Judul wajib diisi';
                           }
 
@@ -532,44 +438,29 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                         'Kategori Survey *',
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
 
                       const SizedBox(height: 6),
 
                       if (isLoadingCategories)
-                        const LinearProgressIndicator(
-                          color: primaryColor,
-                        )
+                        const LinearProgressIndicator(color: primaryColor)
                       else
                         DropdownButtonFormField<int>(
                           value: selectedCategoryId,
 
-                          decoration:
-                              const InputDecoration(
-                            hintText:
-                                'Pilih Kategori',
-                            border:
-                                OutlineInputBorder(),
-                            prefixIcon:
-                                Icon(Icons.category),
+                          decoration: const InputDecoration(
+                            hintText: 'Pilih Kategori',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.category),
                           ),
 
                           items: categories.map((cat) {
                             final id =
-                                int.tryParse(
-                                      cat['id']
-                                              ?.toString() ??
-                                          '',
-                                    ) ??
-                                    0;
+                                int.tryParse(cat['id']?.toString() ?? '') ?? 0;
 
-                            final name =
-                                cat['name']
-                                        ?.toString() ??
-                                    '';
+                            final name = cat['name']?.toString() ?? '';
 
                             return DropdownMenuItem<int>(
                               value: id,
@@ -579,14 +470,12 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
 
                           onChanged: (value) {
                             setState(() {
-                              selectedCategoryId =
-                                  value;
+                              selectedCategoryId = value;
                             });
                           },
 
                           validator: (value) {
-                            if (value == null ||
-                                value == 0) {
+                            if (value == null || value == 0) {
                               return 'Kategori wajib dipilih';
                             }
 
@@ -599,27 +488,21 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                         'Deskripsi Survey',
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
 
                       const SizedBox(height: 6),
 
                       TextFormField(
-                        controller:
-                            descriptionController,
+                        controller: descriptionController,
 
                         maxLines: 3,
 
-                        decoration:
-                            const InputDecoration(
-                          hintText:
-                              'Keterangan atau catatan survey...',
-                          border:
-                              OutlineInputBorder(),
-                          prefixIcon:
-                              Icon(Icons.notes),
+                        decoration: const InputDecoration(
+                          hintText: 'Keterangan atau catatan survey...',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.notes),
                         ),
                       ),
                     ],
@@ -632,30 +515,23 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(14),
-                  side: const BorderSide(
-                    color: Color(0xFFE2E8F0),
-                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  side: const BorderSide(color: Color(0xFFE2E8F0)),
                 ),
 
                 child: Padding(
-                  padding:
-                      const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
                       const Text(
                         'Foto Survey',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight:
-                              FontWeight.bold,
-                          color:
-                              Color(0xFF0F172A),
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
                         ),
                       ),
 
@@ -665,17 +541,12 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                         Column(
                           children: [
                             ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                8,
-                              ),
+                              borderRadius: BorderRadius.circular(8),
 
                               child: Image.memory(
-                                selectedImageBytes ??
-                                    existingImageBytes!,
+                                selectedImageBytes ?? existingImageBytes!,
                                 height: 180,
-                                width:
-                                    double.infinity,
+                                width: double.infinity,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -685,39 +556,22 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                             Row(
                               children: [
                                 Expanded(
-                                  child:
-                                      OutlinedButton.icon(
-                                    onPressed:
-                                        showImageSourceDialog,
-                                    icon: const Icon(
-                                      Icons.photo_library,
-                                    ),
-                                    label:
-                                        const Text(
-                                      'Ganti Foto',
-                                    ),
+                                  child: OutlinedButton.icon(
+                                    onPressed: showImageSourceDialog,
+                                    icon: const Icon(Icons.photo_library),
+                                    label: const Text('Ganti Foto'),
                                   ),
                                 ),
 
                                 const SizedBox(width: 8),
 
                                 OutlinedButton.icon(
-                                  onPressed:
-                                      removeSelectedImage,
-                                  style:
-                                      OutlinedButton.styleFrom(
-                                    foregroundColor:
-                                        const Color(
-                                      0xFFEF4444,
-                                    ),
+                                  onPressed: removeSelectedImage,
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: const Color(0xFFEF4444),
                                   ),
-                                  icon: const Icon(
-                                    Icons.delete,
-                                  ),
-                                  label:
-                                      const Text(
-                                    'Hapus',
-                                  ),
+                                  icon: const Icon(Icons.delete),
+                                  label: const Text('Hapus'),
                                 ),
                               ],
                             ),
@@ -725,62 +579,39 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                         )
                       else
                         InkWell(
-                          onTap:
-                              showImageSourceDialog,
+                          onTap: showImageSourceDialog,
 
-                          borderRadius:
-                              BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8),
 
                           child: Container(
                             height: 120,
-                            width:
-                                double.infinity,
+                            width: double.infinity,
 
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  const Color(
-                                0xFFF1F5F9,
-                              ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF1F5F9),
 
-                              borderRadius:
-                                  BorderRadius.circular(
-                                8,
-                              ),
+                              borderRadius: BorderRadius.circular(8),
 
-                              border:
-                                  Border.all(
-                                color:
-                                    const Color(
-                                  0xFFCBD5E1,
-                                ),
+                              border: Border.all(
+                                color: const Color(0xFFCBD5E1),
                               ),
                             ),
 
-                            child:
-                                const Column(
-                              mainAxisAlignment:
-                                  MainAxisAlignment
-                                      .center,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
 
                               children: [
                                 Icon(
                                   Icons.add_a_photo,
                                   size: 36,
-                                  color:
-                                      primaryColor,
+                                  color: primaryColor,
                                 ),
 
                                 SizedBox(height: 8),
 
                                 Text(
                                   'Ketuk untuk memilih foto',
-                                  style: TextStyle(
-                                    color:
-                                        Color(
-                                      0xFF64748B,
-                                    ),
-                                  ),
+                                  style: TextStyle(color: Color(0xFF64748B)),
                                 ),
                               ],
                             ),
@@ -796,30 +627,23 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(14),
-                  side: const BorderSide(
-                    color: Color(0xFFE2E8F0),
-                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  side: const BorderSide(color: Color(0xFFE2E8F0)),
                 ),
 
                 child: Padding(
-                  padding:
-                      const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
                       const Text(
                         'Lokasi Survey (Koordinat)',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight:
-                              FontWeight.bold,
-                          color:
-                              Color(0xFF0F172A),
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
                         ),
                       ),
 
@@ -828,60 +652,40 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                       Row(
                         children: [
                           Expanded(
-                            child:
-                                TextFormField(
-                              controller:
-                                  latitudeController,
+                            child: TextFormField(
+                              controller: latitudeController,
 
                               keyboardType:
-                                  const TextInputType
-                                      .numberWithOptions(
-                                decimal: true,
-                                signed: true,
-                              ),
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                    signed: true,
+                                  ),
 
-                              decoration:
-                                  const InputDecoration(
-                                labelText:
-                                    'Latitude',
-                                hintText:
-                                    '-7.3274000',
-                                border:
-                                    OutlineInputBorder(),
-                                prefixIcon:
-                                    Icon(
-                                  Icons.my_location,
-                                ),
+                              decoration: const InputDecoration(
+                                labelText: 'Latitude',
+                                hintText: '-7.3274000',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.my_location),
                               ),
                             ),
                           ),
 
                           const SizedBox(width: 12),
                           Expanded(
-                            child:
-                                TextFormField(
-                              controller:
-                                  longitudeController,
+                            child: TextFormField(
+                              controller: longitudeController,
 
                               keyboardType:
-                                  const TextInputType
-                                      .numberWithOptions(
-                                decimal: true,
-                                signed: true,
-                              ),
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                    signed: true,
+                                  ),
 
-                              decoration:
-                                  const InputDecoration(
-                                labelText:
-                                    'Longitude',
-                                hintText:
-                                    '108.2207000',
-                                border:
-                                    OutlineInputBorder(),
-                                prefixIcon:
-                                    Icon(
-                                  Icons.explore,
-                                ),
+                              decoration: const InputDecoration(
+                                labelText: 'Longitude',
+                                hintText: '108.2207000',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.explore),
                               ),
                             ),
                           ),
@@ -897,23 +701,14 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                 height: 48,
 
                 child: ElevatedButton(
-                  onPressed: isSubmitting
-                      ? null
-                      : saveSurvey,
+                  onPressed: isSubmitting ? null : saveSurvey,
 
-                  style:
-                      ElevatedButton.styleFrom(
-                    backgroundColor:
-                        primaryColor,
-                    foregroundColor:
-                        Colors.white,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
 
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                        10,
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
 
@@ -922,23 +717,17 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
                           width: 22,
                           height: 22,
 
-                          child:
-                              CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2,
                           ),
                         )
-
                       : Text(
-                          isEdit
-                              ? 'Simpan Perubahan'
-                              : 'Simpan Survey',
+                          isEdit ? 'Simpan Perubahan' : 'Simpan Survey',
 
-                          style:
-                              const TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
-                            fontWeight:
-                                FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                 ),
