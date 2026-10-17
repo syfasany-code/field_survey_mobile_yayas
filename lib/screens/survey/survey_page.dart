@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:field_survey_mobile_yayas/routes/app_routes.dart';
 import '../survey/survey_detail_page.dart';
 import '../survey/survey_form_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../auth/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +51,7 @@ class _SurveyPageState extends State<SurveyPage> {
 
         return;
       }
+
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: {
@@ -109,6 +112,7 @@ class _SurveyPageState extends State<SurveyPage> {
         builder: (context) => SurveyDetailPage(surveyId: surveyId),
       ),
     );
+
     if (result == true && mounted) {
       fetchSurveys();
     }
@@ -119,6 +123,7 @@ class _SurveyPageState extends State<SurveyPage> {
       context,
       MaterialPageRoute(builder: (context) => const SurveyFormPage()),
     );
+
     if (result == true && mounted) {
       fetchSurveys();
     }
@@ -151,12 +156,27 @@ class _SurveyPageState extends State<SurveyPage> {
     }
   }
 
+  // Navigasi bawah
+  void onNavigationTap(int index) {
+    if (index == 0) {
+      // Home
+      context.go(AppRoutes.dashboard);
+    } else if (index == 1) {
+      // Survey
+      // Sudah berada di halaman Survey.
+    } else if (index == 2) {
+      // Profil
+      context.go(AppRoutes.profile);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Daftar Survey'),
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
@@ -177,6 +197,34 @@ class _SurveyPageState extends State<SurveyPage> {
         label: const Text(
           'Tambah Survey',
           style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: 1,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF3F51B5),
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 14,
+          unselectedFontSize: 12,
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          onTap: onNavigationTap,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment),
+              label: 'Survey',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          ],
         ),
       ),
     );
@@ -211,9 +259,7 @@ class _SurveyPageState extends State<SurveyPage> {
                 size: 64,
                 color: Color(0xFFEF4444),
               ),
-
               const SizedBox(height: 16),
-
               const Text(
                 'Gagal Memuat Data',
                 style: TextStyle(
@@ -222,17 +268,13 @@ class _SurveyPageState extends State<SurveyPage> {
                   color: Color(0xFF0F172A),
                 ),
               ),
-
               const SizedBox(height: 8),
-
               Text(
                 errorMessage!,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Color(0xFF64748B)),
               ),
-
               const SizedBox(height: 20),
-
               ElevatedButton.icon(
                 onPressed: fetchSurveys,
                 style: ElevatedButton.styleFrom(
@@ -260,9 +302,7 @@ class _SurveyPageState extends State<SurveyPage> {
                 size: 64,
                 color: Color(0xFF94A3B8),
               ),
-
               const SizedBox(height: 16),
-
               const Text(
                 'Belum Ada Data Survey',
                 style: TextStyle(
@@ -271,17 +311,13 @@ class _SurveyPageState extends State<SurveyPage> {
                   color: Color(0xFF0F172A),
                 ),
               ),
-
               const SizedBox(height: 8),
-
               const Text(
                 'Tekan tombol di bawah untuk menambah survey baru.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Color(0xFF64748B)),
               ),
-
               const SizedBox(height: 20),
-
               ElevatedButton.icon(
                 onPressed: openAddSurvey,
                 style: ElevatedButton.styleFrom(
@@ -300,54 +336,39 @@ class _SurveyPageState extends State<SurveyPage> {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
       itemCount: surveys.length,
-
       itemBuilder: (context, index) {
         final survey = surveys[index];
 
         final id = int.tryParse(survey['id']?.toString() ?? '') ?? 0;
-
         final title = survey['title']?.toString() ?? '-';
-
         final description = survey['description']?.toString() ?? '-';
-
         final category = getCategoryName(survey);
-
         final date = formatDate(survey['created_at']?.toString());
-
         final lat = survey['latitude']?.toString() ?? '';
-
         final lng = survey['longitude']?.toString() ?? '';
 
         return Card(
           elevation: 0,
           margin: const EdgeInsets.only(bottom: 12),
           color: Colors.white,
-
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
             side: const BorderSide(color: Color(0xFFE2E8F0)),
           ),
-
           child: InkWell(
             borderRadius: BorderRadius.circular(14),
-
             onTap: () => openDetail(id),
-
             child: Padding(
               padding: const EdgeInsets.all(16),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-
                           children: [
                             Text(
                               title,
@@ -359,20 +380,16 @@ class _SurveyPageState extends State<SurveyPage> {
                                 color: Color(0xFF0F172A),
                               ),
                             ),
-
                             const SizedBox(height: 6),
-
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 3,
                               ),
-
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEFF6FF),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-
                               child: Text(
                                 category,
                                 style: const TextStyle(
@@ -385,11 +402,9 @@ class _SurveyPageState extends State<SurveyPage> {
                           ],
                         ),
                       ),
-
                       const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
                     ],
                   ),
-
                   const SizedBox(height: 18),
                   Text(
                     description,
@@ -400,11 +415,8 @@ class _SurveyPageState extends State<SurveyPage> {
                       color: Color(0xFF64748B),
                     ),
                   ),
-
                   const SizedBox(height: 12),
-
                   const Divider(color: Color(0xFFE2E8F0), height: 1),
-
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -413,9 +425,7 @@ class _SurveyPageState extends State<SurveyPage> {
                         size: 14,
                         color: primaryColor,
                       ),
-
                       const SizedBox(width: 4),
-
                       Expanded(
                         child: Text(
                           (lat.isNotEmpty && lng.isNotEmpty)
@@ -429,17 +439,13 @@ class _SurveyPageState extends State<SurveyPage> {
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 8),
-
                       const Icon(
                         Icons.access_time,
                         size: 14,
                         color: Color(0xFF64748B),
                       ),
-
                       const SizedBox(width: 4),
-
                       Text(
                         date,
                         style: const TextStyle(

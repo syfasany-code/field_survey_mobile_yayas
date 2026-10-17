@@ -29,7 +29,7 @@ class _DashboardPageState extends State<DashboardPage>
   bool _hasError = false;
 
   int _totalSurvey = 0;
-  int _totalResponden = 0;
+  int _totalKategori = 0;
 
   String _userName = 'Surveyor';
 
@@ -124,7 +124,6 @@ class _DashboardPageState extends State<DashboardPage>
           prefs.getString('access_token') ??
           '';
 
-      // Tampilkan nama tersimpan sementara menunggu API.
       final savedName =
           prefs.getString('user_name') ??
           prefs.getString('name') ??
@@ -175,27 +174,41 @@ class _DashboardPageState extends State<DashboardPage>
         surveys = body['data']['data'];
       }
 
-      // Hitung jumlah responden berdasarkan ID unik.
-      final Set<String> respondentIds = {};
+      // Hitung kategori unik.
+      // Survey dengan kategori yang sama dihitung satu kali.
+      final Set<String> kategoriUnik = {};
 
       for (final item in surveys) {
         if (item is! Map) continue;
 
-        final id =
-            item['responden_id'] ??
-            item['id_responden'] ??
-            item['nama_responden'];
+        dynamic kategori;
 
-        if (id != null && id.toString().trim().isNotEmpty) {
-          respondentIds.add(id.toString());
+        if (item['category_name'] != null) {
+          kategori = item['category_name'];
+        } else if (item['category'] is Map) {
+          kategori =
+              item['category']['name'] ??
+              item['category']['nama'] ??
+              item['category']['id'];
+        } else {
+          kategori =
+              item['kategori'] ?? item['category_id'] ?? item['kategori_id'];
+        }
+
+        if (kategori != null && kategori.toString().trim().isNotEmpty) {
+          kategoriUnik.add(kategori.toString().trim().toLowerCase());
         }
       }
 
       if (!mounted) return;
 
       setState(() {
+        // Total survei tetap menghitung semua data.
         _totalSurvey = surveys.length;
-        _totalResponden = respondentIds.length;
+
+        // Total kategori menghitung kategori yang berbeda.
+        _totalKategori = kategoriUnik.length;
+
         _recentSurveys = surveys.reversed.take(4).toList();
 
         _isLoading = false;
@@ -329,10 +342,10 @@ class _DashboardPageState extends State<DashboardPage>
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildStatCard(
-                      title: 'Responden',
-                      value: '$_totalResponden',
-                      subtitle: 'Responden unik',
-                      icon: Icons.people_outline_rounded,
+                      title: 'Kategori',
+                      value: '$_totalKategori',
+                      subtitle: 'Kategori unik',
+                      icon: Icons.category_rounded,
                       color: const Color(0xFF20BF6B),
                     ),
                   ),

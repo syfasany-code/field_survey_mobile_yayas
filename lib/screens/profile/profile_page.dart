@@ -706,6 +706,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FB),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Profil',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -822,6 +823,41 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: 2,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF3F51B5),
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 14,
+          unselectedFontSize: 12,
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          onTap: (index) {
+            if (index == 0) {
+              context.go(AppRoutes.dashboard);
+            } else if (index == 1) {
+              context.go(AppRoutes.survey);
+            } else if (index == 2) {
+              // Sudah berada di halaman Profil.
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment),
+              label: 'Survey',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          ],
+        ),
+      ),
     );
   }
 
