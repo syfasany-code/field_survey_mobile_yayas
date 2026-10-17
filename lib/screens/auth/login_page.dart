@@ -56,31 +56,36 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        // Ambil token
         final token = data['data']['token'];
 
         if (token == null) {
           throw Exception('Token tidak ditemukan dari API');
         }
 
-        // Simpan token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token.toString());
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(data['message'] ?? 'Login berhasil'),
-            backgroundColor: Colors.green,
+            backgroundColor: const Color(0xFF10B981),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
 
-        // Masuk Dashboard
         context.go(AppRoutes.dashboard);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(data['message'] ?? 'Email atau password salah'),
-            backgroundColor: Colors.red,
+            backgroundColor: const Color(0xFFEF4444),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -90,7 +95,11 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
-          backgroundColor: Colors.red,
+          backgroundColor: const Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     } finally {
@@ -104,155 +113,288 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Warna sesuai sampel gambar
+    const primaryColor = Color(0xFF3B51C0); 
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
-
-      appBar: AppBar(
-        title: const Text(
-          'Login',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xFF3F51B5),
-        foregroundColor: Colors.white,
-      ),
-
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const SizedBox(height: 25),
-
-                const Icon(
-                  Icons.assignment_rounded,
-                  size: 90,
-                  color: Color(0xFF3F51B5),
-                ),
-
-                const SizedBox(height: 20),
-
-                const Text(
-                  'Field Survey',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  'Silakan masuk ke akun Anda',
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
-                ),
-
-                const SizedBox(height: 35),
-
-                // EMAIL
-                TextFormField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Masukkan email',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
+        child: Center(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo / Icon Branding
+                  Container(
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: primaryColor.withOpacity(0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.assignment_turned_in_rounded,
+                      size: 42,
+                      color: primaryColor,
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email wajib diisi';
-                    }
+                  const SizedBox(height: 20),
 
-                    if (!value.contains('@')) {
-                      return 'Email tidak valid';
-                    }
-
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 18),
-
-                // PASSWORD
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Masukkan password',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          obscurePassword = !obscurePassword;
-                        });
-                      },
-                      icon: Icon(
-                        obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
+                  // Title Text
+                  const Text(
+                    'Field Survey',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1E293B),
+                      letterSpacing: -0.5,
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password wajib diisi';
-                    }
-
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 25),
-
-                // LOGIN
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF3F51B5),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Selamat datang kembali, silakan masuk ke akun Anda',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF64748B),
+                      fontSize: 14,
                     ),
-                    child: isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(height: 28),
+
+                  // Card Form Container
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Email Field Label
+                        const Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF334155),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: const TextStyle(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'nama@email.com',
+                            hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                            prefixIcon: const Icon(
+                              Icons.email_outlined,
+                              size: 20,
+                              color: Color(0xFF94A3B8),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8FAFC),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFE2E8F0),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: primaryColor,
+                                width: 1.5,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFEF4444),
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFEF4444),
+                                width: 1.5,
+                              ),
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Email wajib diisi';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Format email tidak valid';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Password Field Label
+                        const Text(
+                          'Password',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF334155),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: obscurePassword,
+                          style: const TextStyle(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan password',
+                            hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline_rounded,
+                              size: 20,
+                              color: Color(0xFF94A3B8),
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  obscurePassword = !obscurePassword;
+                                });
+                              },
+                              icon: Icon(
+                                obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                size: 20,
+                                color: const Color(0xFF94A3B8),
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8FAFC),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFE2E8F0),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: primaryColor,
+                                width: 1.5,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFEF4444),
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFEF4444),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Password wajib diisi';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Tombol Login
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: isLoading ? null : login,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Masuk',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 24),
 
-                // REGISTER
-                TextButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          context.go(AppRoutes.register);
-                        },
-                  child: const Text('Belum punya akun? Daftar'),
-                ),
-              ],
+                  // Link Register
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Belum punya akun? ',
+                        style: TextStyle(
+                          color: Color(0xFF64748B),
+                          fontSize: 14,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: isLoading
+                            ? null
+                            : () {
+                                context.go(AppRoutes.register);
+                              },
+                        child: const Text(
+                          'Daftar Sekarang',
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
