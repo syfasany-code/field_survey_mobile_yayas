@@ -209,7 +209,7 @@ class _DashboardPageState extends State<DashboardPage>
         // Total kategori menghitung kategori yang berbeda.
         _totalKategori = kategoriUnik.length;
 
-        _recentSurveys = surveys.reversed.take(4).toList();
+        _recentSurveys = surveys.reversed.take(4 ).toList();
 
         _isLoading = false;
         _hasError = false;
@@ -372,41 +372,41 @@ class _DashboardPageState extends State<DashboardPage>
 
             const SizedBox(height: 28),
 
-            const Text(
-              'Aksi Cepat',
-              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-            ),
+            // const Text(
+            //   'Aksi Cepat',
+            //   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            // ),
 
-            const SizedBox(height: 15),
+            // const SizedBox(height: 15),
 
-            _buildActionCard(
-              icon: Icons.add_chart_rounded,
-              title: 'Mulai Survei',
-              subtitle: 'Buka halaman pengelolaan survei',
-              onTap: () => _openPage(AppRoutes.survey),
-            ),
+            // _buildActionCard(
+            //   icon: Icons.add_chart_rounded,
+            //   title: 'Mulai Survei',
+            //   subtitle: 'Buka halaman pengelolaan survei',
+            //   onTap: () => _openPage(AppRoutes.survey),
+            // ),
 
-            const SizedBox(height: 12),
+            // const SizedBox(height: 12),
 
-            _buildActionCard(
-              icon: Icons.person_outline_rounded,
-              title: 'Profil Saya',
-              subtitle: 'Lihat informasi akun',
-              onTap: () async {
-                await context.push(
-                  AppRoutes.profile,
-                  extra: widget.token ?? '',
-                );
+            // _buildActionCard(
+            //   icon: Icons.person_outline_rounded,
+            //   title: 'Profil Saya',
+            //   subtitle: 'Lihat informasi akun',
+            //   onTap: () async {
+            //     await context.push(
+            //       AppRoutes.profile,
+            //       extra: widget.token ?? '',
+            //     );
 
-                if (!mounted) return;
+            //     if (!mounted) return;
 
-                setState(() {
-                  _selectedIndex = 0;
-                });
+            //     setState(() {
+            //       _selectedIndex = 0;
+            //     });
 
-                await _loadDynamicData();
-              },
-            ),
+            //     await _loadDynamicData();
+            //   },
+            // ),
 
             const SizedBox(height: 28),
 
