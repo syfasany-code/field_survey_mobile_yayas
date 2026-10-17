@@ -274,6 +274,7 @@ class _DashboardPageState extends State<DashboardPage>
       backgroundColor: background,
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Dashboard',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -604,11 +605,6 @@ class _DashboardPageState extends State<DashboardPage>
             ),
           ),
           const SizedBox(width: 10),
-          const CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.white24,
-            child: Icon(Icons.person_rounded, color: Colors.white, size: 38),
-          ),
         ],
       ),
     );
